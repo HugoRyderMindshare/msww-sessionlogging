@@ -1,0 +1,29 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "msww-sessionlogging"
+version = "1.0.0"
+authors = [
+    {name="Hugo Ryder", email="hugo.ryder@mindshareworld.com"},
+]
+description = ""
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src", 
+]
+
+[tool.hatch.build.targets.wheel]
+include = [
+    "src", 
+]
+packages = ["src/sessionlogging"]
