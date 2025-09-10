@@ -8,9 +8,28 @@ version = "1.0.0"
 authors = [
     {name="Hugo Ryder", email="hugo.ryder@mindshareworld.com"},
 ]
-description = ""
+description = "A comprehensive Python logging package with performance monitoring, phase tracking, and system resource analysis"
 readme = "README.md"
 requires-python = ">=3.8"
+dependencies = [
+    "psutil>=5.8.0",
+]
+
+[project.optional-dependencies]
+git = ["GitPython>=3.1.0"]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov>=2.0",
+    "black>=22.0",
+    "flake8>=4.0",
+    "mypy>=0.900",
+]
+
+[project.urls]
+Homepage = "https://github.com/HugoRyderMindshare/msww-sessionlogging"
+Repository = "https://github.com/HugoRyderMindshare/msww-sessionlogging"
+Issues = "https://github.com/HugoRyderMindshare/msww-sessionlogging/issues"
+
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
@@ -27,3 +46,19 @@ include = [
     "src", 
 ]
 packages = ["src/sessionlogging"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
