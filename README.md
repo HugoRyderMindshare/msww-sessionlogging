@@ -153,17 +153,17 @@ session = Session(session_name="data_pipeline")
 session.start()
 
 # Your application code here
-session.info("Starting data processing")
+session.logger.info("Starting data processing")
 
 # Use phase tracking for structured monitoring
 with session.phase("data_loading"):
     # Data loading code
     session.monitor_system_performance()
-    session.info("Loaded 10,000 records")
+    session.logger.info("Loaded 10,000 records")
 
 with session.phase("data_processing"):
     # Data processing code
-    session.info("Processing complete")
+    session.logger.info("Processing complete")
 
 # Finalize and generate summary
 session.finalize()
@@ -195,7 +195,7 @@ session.start(configuration=config)
 with session.phase("training") as phase:
     for epoch in range(100):
         # Training code here
-        session.debug(f"Epoch {epoch} completed")
+        session.logger.debug(f"Epoch {epoch} completed")
         
         # Update phase metrics
         phase.records_processed = 10000 * (epoch + 1)
@@ -247,14 +247,20 @@ session.start()
 df = pd.read_csv("data.csv")
 
 with session.phase("data_exploration") as phase:
-    # Log input data statistics
-    session.log_data_stats(df, "input_dataset")
+    # Log input data statistics using log_data_summary
+    session.log_data_summary(
+        {"rows": len(df), "columns": len(df.columns)},
+        title="Input Dataset Stats"
+    )
     
     # Process data
     processed_df = df.dropna()
     
     # Log output statistics  
-    session.log_data_stats(processed_df, "cleaned_dataset")
+    session.log_data_summary(
+        {"rows": len(processed_df), "columns": len(processed_df.columns)},
+        title="Cleaned Dataset Stats"
+    )
     
     # Update phase metrics
     phase.input_data_stats = {
@@ -281,14 +287,14 @@ session.start()
 try:
     with session.phase("risky_operation"):
         # Some operation that might generate warnings/errors
-        session.warning("This is a warning message")
-        session.error("This is an error message")
+        session.logger.warning("This is a warning message")
+        session.logger.error("This is an error message")
         
         # Errors and warnings are automatically collected
         # for summary reporting
         
 except Exception as e:
-    session.error(f"Unexpected error: {str(e)}")
+    session.logger.error(f"Unexpected error: {str(e)}")
 
 # Summary will include all warnings and errors
 session.finalize()
@@ -323,14 +329,18 @@ The main class for advanced logging with performance monitoring and phase tracki
 - `phase(phase_name)` - Context manager for tracking execution phases
 - `finalize()` - End session and generate comprehensive summary
 - `monitor_system_performance()` - Capture current system performance metrics
-- `log_data_stats(data, name)` - Log statistical information about datasets
 - `update_phase_metrics(**kwargs)` - Update metrics for current phase
+- `get_log_file_path()` - Get the path to the session's log file
+- `get_performance_statistics()` - Get comprehensive performance statistics
 
 **Logging Methods:**
-- `debug(message)`, `info(message)`, `warning(message)`, `error(message)`, `critical(message)`
-- `log_values(values_dict)` - Log key-value pairs in structured format
-- `log_data_summary(data, name)` - Log comprehensive data summary
-- `log_pipeline_step(step_name, input_data, output_data)` - Log pipeline step details
+- `logger.debug(message)`, `logger.info(message)`, `logger.warning(message)`, `logger.error(message)`, `logger.critical(message)` - Standard logging methods via the logger attribute
+- `log_values(values_dict, title=None)` - Log key-value pairs in structured format
+- `log_data_summary(data_info, title=None)` - Log comprehensive data summary
+- `log_pipeline_step(step_name, input_data=None, output_data=None, metrics=None)` - Log pipeline step details
+- `log_warning_message(message, **kwargs)` - Log a warning message
+- `log_error_with_context(exception, **kwargs)` - Log an error with context information
+- `log_file_operation(operation, file_path, size_mb=None)` - Log file operations
 
 #### `SessionInfo`
 
